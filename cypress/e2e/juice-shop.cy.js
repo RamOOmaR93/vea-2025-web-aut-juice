@@ -1,4 +1,6 @@
 import { HomePage } from "../pageObjects/HomePage";
+import { LoginPage } from "../pageObjects/LoginPage";
+import { RegistrationPage } from "../pageObjects/RegistrationPage";
 
 describe("Juice-shop scenarios", () => {
   context("Without auto login", () => {
@@ -9,32 +11,60 @@ describe("Juice-shop scenarios", () => {
     });
 
     it("Login", () => {
-      // Click Account button
-      // Click Login button
-      // Set email value to "demo"
-      // Set password value to "demo"
-      // Click Log in
-      // Click Account button
-      // Validate that "demo" account name appears in the menu section
+       // Click Account button
+       HomePage.accountButton.click();
+       // Click Login button
+       HomePage.loginButton.click();
+       // Set email value to "demo"
+       LoginPage.emailField.type("demo");
+       // Set password value to "demo"
+       LoginPage.passwordField.type("demo");
+       // Click Log in
+       LoginPage.loginButton.click();
+       // Click Account button
+       HomePage.accountButton.click();
+       // Validate that "demo" account name appears in the menu section
+       HomePage.userProfileMenuButton.should("contain.text", "demo");
     });
+
+
 
     it("Registration", () => {
       // Click Account button
+      HomePage.accountButton.click();
       // Login button
+      HomePage.loginButton.click();
       // Click "Not yet a customer?"
+      LoginPage.notYetCustomerLink.click();
       // Find - how to generate random number in JS
       // Use that number to genarate unique email address, e.g.: email_7584@ebox.com
       // Save that email address to some variable
+      const emailNumber = Math.floor(Math.random() * 101);
+      const email = "email_" + emailNumber.toString() + "@ebox.com";
+      const password = "randompassword";
+      RegistrationPage.emailField.type(email);
       // Fill in password field and repeat password field with same password
+      RegistrationPage.passwordField.type(password);
+      RegistrationPage.repeatPasswordField.type(password);
       // Click on Security Question menu
+      RegistrationPage.securityQuestionField.click();
+      
       // Select  "Name of your favorite pet?"
+      RegistrationPage.menuOptions.contains("Your favorite book?").click();
       // Fill in answer
+      RegistrationPage.answerField.type("RandomAnswer");
       // Click Register button
+      RegistrationPage.registrationButton.click();
       // Set email value to previously created email
+      LoginPage.emailField.type(email)
       // Set password value to previously used password value
+      LoginPage.passwordField.type(password);
       // Click login button
+      LoginPage.loginButton.click();
+      HomePage.accountButton.click();
       // Click Account button
       // Validate that account name (with previously created email address) appears in the menu section
+      HomePage.userProfileMenuButton.should("contain.text", email);
     });
   });
 
@@ -44,11 +74,15 @@ describe("Juice-shop scenarios", () => {
       HomePage.visit();
     });
 
-    it("Search and validate Lemon", () => {
+    it.only("Search and validate Lemon", () => {
       // Click on search icon
+      HomePage.searchIcon.click();
       // Search for Lemon
+      HomePage.searchField.type("Lemon{enter}")
       // Select a product card - Lemon Juice (500ml)
+      HomePage.productBox.contains("Lemon Juice (500ml)").click();
       // Validate that the card (should) contains "Sour but full of vitamins."
+      HomePage.productBoxContent.should("contain.text", "Sour but full of vitamins.");
     });
 
     // Create scenario - Search 500ml and validate Lemon, while having multiple cards
